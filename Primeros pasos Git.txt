@@ -1,1 +1,69 @@
 Hola esto es para iniciar
+1.6 Primeros pasos: configuración de Git por primera vez
+Configuración de Git por primera vez
+Ahora que tienes Git en tu sistema, querrás hacer algunas cosas para personalizar tu entorno Git. Debes hacer estas cosas solo una vez en cada computadora; se mantendrán entre actualizaciones. También puedes cambiarlas en cualquier momento ejecutando los comandos nuevamente.
+
+Git incluye una herramienta llamada git configque permite obtener y configurar variables de configuración que controlan todos los aspectos de la apariencia y el funcionamiento de Git. Estas variables se pueden almacenar en tres lugares diferentes:
+
+[path]/etc/gitconfigArchivo: contiene valores aplicados a cada usuario del sistema y a todos sus repositorios. Si pasa la opción --systema git config, lee y escribe desde este archivo específicamente. Debido a que se trata de un archivo de configuración del sistema, necesitará privilegios administrativos o de superusuario para realizar cambios en él.
+
+~/.gitconfigo ~/.config/git/configarchivo: valores específicos para usted, el usuario. Puede hacer que Git lea y escriba en este archivo específicamente al pasar la --globalopción, y esto afecta a todos los repositorios con los que trabaja en su sistema.
+
+configarchivo en el directorio Git (es decir, .git/config) de cualquier repositorio que estés usando actualmente: específico para ese único repositorio. Puedes forzar a Git a leer y escribir en este archivo con la --localopción, pero esa es la opción predeterminada. Como era de esperar, debes estar ubicado en algún lugar de un repositorio Git para que esta opción funcione correctamente.
+
+Cada nivel anula los valores del nivel anterior, por lo que los valores en .git/configprevalecen sobre los de [path]/etc/gitconfig.
+
+En los sistemas Windows, Git busca el .gitconfigarchivo en el $HOMEdirectorio ( C:\Users\$USERpara la mayoría de las personas). También sigue buscando [path]/etc/gitconfig, aunque es relativo a la raíz de MSys, que es donde decides instalar Git en tu sistema Windows cuando ejecutas el instalador. Si estás usando la versión 2.x o posterior de Git para Windows, también hay un archivo de configuración a nivel de sistema en C:\Documents and Settings\All Users\Application Data\Git\configen Windows XP y en C:\ProgramData\Git\configen Windows Vista y versiones posteriores. Este archivo de configuración solo puede ser modificado por git config -f <file>un administrador.
+
+Puede ver todas sus configuraciones y de dónde provienen usando:
+
+$ git config --list --show-origin
+Tu identidad
+Lo primero que debes hacer cuando instalas Git es configurar tu nombre de usuario y dirección de correo electrónico. Esto es importante porque cada confirmación de Git utiliza esta información y está incorporada de manera inmutable en las confirmaciones que comienzas a crear:
+
+$ git config --global user.name "John Doe"
+$ git config --global user.email johndoe@example.com
+Nuevamente, debes hacer esto solo una vez si pasas la --globalopción, porque entonces Git siempre usará esa información para cualquier cosa que hagas en ese sistema. Si quieres anular esto con un nombre o una dirección de correo electrónico diferentes para proyectos específicos, puedes ejecutar el comando sin la --globalopción cuando estés en ese proyecto.
+
+Muchas de las herramientas GUI le ayudarán a hacer esto la primera vez que las ejecute.
+
+Su editor
+Ahora que tu identidad está configurada, puedes configurar el editor de texto predeterminado que se usará cuando Git necesite que escribas un mensaje. Si no lo configuras, Git usa el editor predeterminado de tu sistema.
+
+Si desea utilizar un editor de texto diferente, como Emacs, puede hacer lo siguiente:
+
+$ git config --global core.editor emacs
+En un sistema Windows, si desea utilizar un editor de texto diferente, debe especificar la ruta completa a su archivo ejecutable. Esto puede variar según cómo esté empaquetado el editor.
+
+En el caso de Notepad++, un editor de programación muy popular, es probable que desee utilizar la versión de 32 bits, ya que en el momento de escribir este artículo la versión de 64 bits no admite todos los complementos. Si está utilizando un sistema Windows de 32 bits o tiene un editor de 64 bits en un sistema de 64 bits, deberá escribir algo como esto:
+
+$ git config --global core.editor "'C:/Program Files/Notepad++/notepad++.exe' -multiInst -notabbar -nosession -noPlugin"
+Nota
+Vim, Emacs y Notepad++ son editores de texto populares que suelen utilizar los desarrolladores en sistemas basados ​​en Unix, como Linux y macOS, o en sistemas Windows. Si utiliza otro editor o una versión de 32 bits, consulte las instrucciones específicas sobre cómo configurar su editor favorito con Git en los comandos git config core.editor .
+
+Advertencia
+Si no configuras tu editor de esta manera, es posible que te encuentres en una situación muy confusa cuando Git intente iniciarlo. Un ejemplo en un sistema Windows puede incluir una operación de Git finalizada prematuramente durante una edición iniciada por Git.
+
+Su nombre de sucursal predeterminado
+De forma predeterminada, Git creará una rama llamada master cuando crees un nuevo repositorio con git init. A partir de la versión 2.28 de Git, puedes establecer un nombre diferente para la rama inicial.
+
+Para establecer main como el nombre de rama predeterminado, haga lo siguiente:
+
+$ git config --global init.defaultBranch main
+Comprobación de la configuración
+Si desea verificar su configuración, puede usar el git config --listcomando para enumerar todas las configuraciones que Git puede encontrar en ese momento:
+
+$ git config --list
+user.name=John Doe
+user.email=johndoe@example.com
+color.status=auto
+color.branch=auto
+color.interactive=auto
+color.diff=auto
+...
+Es posible que veas las claves más de una vez, porque Git lee la misma clave de distintos archivos ( [path]/etc/gitconfigy ~/.gitconfig, por ejemplo). En este caso, Git utiliza el último valor para cada clave única que ve.
+
+También puedes comprobar qué piensa Git que es el valor de una clave específica escribiendo git config <key>:
+
+$ git config user.name
+John Doe
