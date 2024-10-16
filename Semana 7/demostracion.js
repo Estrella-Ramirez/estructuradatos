@@ -91,3 +91,4 @@ function negacion(permiso) {
     }
     
     tablasDelAl(2, 6);
+    
